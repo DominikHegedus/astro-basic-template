@@ -26,6 +26,17 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 		<main class="layout-main">
 			<slot />
 		</main>
+		<script is:inline>
+			function applyPriceBlur() {
+				var params = new URLSearchParams(window.location.search);
+				var els = document.querySelectorAll('[data-price-blur]');
+				els.forEach(function (el) {
+					el.classList.toggle('price-blur-wrapper', params.get('type') === 'hidden');
+				});
+			}
+			document.addEventListener('DOMContentLoaded', applyPriceBlur);
+			window.addEventListener('popstate', applyPriceBlur);
+		</script>
 	</body>
 </html>
 
