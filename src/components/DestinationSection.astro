@@ -1,0 +1,141 @@
+---
+import type { Destination } from '../data/flights';
+
+interface Props {
+  destination: Destination;
+  index?: number;
+}
+
+const { destination } = Astro.props;
+
+const destinationImages: Record<string, string> = {
+  'Nápoly': '/naples.jpeg',
+  'Valencia': '/valencia.jpg',
+  'Alicante': '/alicante.jpg',
+  'Rodosz': '/rodosz.jpg',
+  'Mykonos': '/mykonos.jpg',
+  'Lisszabon - Porto': '/porto.jpg',
+  'Lisszabon': '/lisbon.jpg',
+};
+
+const airlineLogos: Record<string, string> = {
+  'WizzAir': '/wizzair-logo.png',
+  'RyanAir': '/ryanair-logo.png',
+};
+
+const destinationImage = destinationImages[destination.name] ?? '';
+
+function formatPrice(price: number): string {
+  return new Intl.NumberFormat('hu-HU').format(price) + ' Ft';
+}
+
+function getAirlineLogo(airline: string): string | undefined {
+  return airlineLogos[airline];
+}
+
+/** Both airline logos use the same small size for consistency */
+const airlineLogoClass = 'h-3.5 max-w-14 object-contain';
+---
+
+<section class="destination-section max-w-3xl mx-auto">
+  <article class="destination-card rounded-xl border border-border bg-card text-card-foreground overflow-hidden shadow-sm">
+    {destinationImage && (
+      <div class="destination-card__hero relative h-44 sm:h-52 md:h-64 lg:h-72 overflow-hidden">
+        <img
+          src={destinationImage}
+          alt={destination.name}
+          class="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
+        <h2 class="absolute bottom-0 left-0 right-0 p-4 text-xl sm:text-2xl font-bold text-white drop-shadow-md">
+          {destination.name}
+        </h2>
+      </div>
+    )}
+    {!destinationImage && (
+      <h2 class="destination-card__title-only px-4 pt-4 text-xl font-semibold text-foreground">
+        {destination.name}
+      </h2>
+    )}
+    <div class="destination-card__options p-4 sm:p-5 space-y-4">
+      {destination.options.map((option) => (
+        <div
+          class="option-card rounded-lg border border-border bg-muted/30 p-4 hover:bg-muted/50 transition-colors"
+        >
+          <div class="space-y-3">
+            <div class="option-card__leg flex items-start gap-3 text-sm">
+              <span class="option-card__label shrink-0 w-12 text-muted-foreground text-xs font-medium uppercase tracking-wide pt-0.5">
+                Oda
+              </span>
+              <div class="min-w-0 flex-1">
+                <div class="font-medium text-foreground">{option.outbound.direction}</div>
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2">
+                  <span class="text-base font-semibold text-foreground tabular-nums">
+                    {option.outbound.date} · {option.outbound.time}
+                  </span>
+                  <span class="text-sm text-muted-foreground">({option.outbound.dayOfWeek})</span>
+                  <span class="inline-flex items-center gap-1.5 ml-auto">
+                    {getAirlineLogo(option.outbound.airline) ? (
+                      <img
+                        src={getAirlineLogo(option.outbound.airline)}
+                        alt={option.outbound.airline}
+                        class={airlineLogoClass}
+                        width="64"
+                        height="16"
+                      />
+                    ) : (
+                      <span class="text-sm text-muted-foreground">{option.outbound.airline}</span>
+                    )}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="option-card__leg flex items-start gap-3 text-sm">
+              <span class="option-card__label shrink-0 w-12 text-muted-foreground text-xs font-medium uppercase tracking-wide pt-0.5">
+                Vissza
+              </span>
+              <div class="min-w-0 flex-1">
+                <div class="font-medium text-foreground">{option.return.direction}</div>
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2">
+                  <span class="text-base font-semibold text-foreground tabular-nums">
+                    {option.return.date} · {option.return.time}
+                  </span>
+                  <span class="text-sm text-muted-foreground">({option.return.dayOfWeek})</span>
+                  <span class="inline-flex items-center gap-1.5 ml-auto">
+                    {getAirlineLogo(option.return.airline) ? (
+                      <img
+                        src={getAirlineLogo(option.return.airline)}
+                        alt={option.return.airline}
+                        class={airlineLogoClass}
+                        width="64"
+                        height="16"
+                      />
+                    ) : (
+                      <span class="text-sm text-muted-foreground">{option.return.airline}</span>
+                    )}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="option-card__price mt-3 pt-3 border-t border-border flex justify-end items-baseline">
+            <span class="text-lg font-semibold text-foreground">
+              {formatPrice(option.price)}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </article>
+</section>
+
+<style>
+  .destination-section {
+    margin-bottom: 2.5rem;
+  }
+  .destination-section:last-child {
+    margin-bottom: 0;
+  }
+</style>

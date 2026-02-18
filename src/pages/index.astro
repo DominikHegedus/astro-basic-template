@@ -1,11 +1,17 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import DestinationSection from '../components/DestinationSection.astro';
+import { destinations } from '../data/flights';
 ---
 
 <Layout>
-	<Welcome />
+	<header class="mb-10 max-w-3xl mx-auto">
+		<h1 class="text-2xl font-bold text-foreground mb-2">Kristóf diplomás út</h1>
+		<p class="text-muted-foreground">
+			Budapest indulású repülőjáratok összehasonlítása célállomások szerint.
+		</p>
+	</header>
+	{destinations.map((destination, index) => (
+		<DestinationSection destination={destination} index={index} />
+	))}
 </Layout>
