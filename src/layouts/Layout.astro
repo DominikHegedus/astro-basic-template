@@ -17,7 +17,7 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 		<meta name="description" content="Járatszerkesztő – Budapest indulású repülőjáratok összehasonlítása célállomások szerint." />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Járatszerkesztő – Repülőjárat összehasonlítás</title>
+		<title>Kristóf trip</title>
 	</head>
 	<body>
 		<header class="layout-header">
@@ -41,6 +41,13 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 </html>
 
 <style>
+	/* Price blur: must live in layout so it's always present when the inline script adds .price-blur-wrapper (fixes production deploy) */
+	:global(.price-blur-wrapper) {
+		position: relative;
+		filter: blur(6px);
+		user-select: none;
+		pointer-events: none;
+	}
 	html {
 		box-sizing: border-box;
 	}
